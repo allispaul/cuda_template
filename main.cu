@@ -276,7 +276,8 @@ void time(int M, int N, int K, int iters, int seed, int kernel_num) {
   dispatch(dA, dB, dC, M, N, K, warmup_iters, kernel_num);
   double secs = dispatch(dA, dB, dC, M, N, K, iters, kernel_num);
 
-  std::cout << "Kernel " << kernel_num << ": " << secs * 1000000.0 << "ms\n";
+  std::cout << "Kernel " << kernel_num << ": " << secs * 1000.0 / iters << "ms"
+            << " (average of " << iters << " iters)\n";
 
   CUDA_ERR_CHK(cudaFree(dA));
   CUDA_ERR_CHK(cudaFree(dB));
