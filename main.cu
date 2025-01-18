@@ -272,12 +272,9 @@ void time(int M, int N, int K, int iters, int seed, int kernel_num) {
   CUDA_ERR_CHK(cudaMemcpy(dB, hB, B_size * sizeof(TB), cudaMemcpyHostToDevice));
   CUDA_ERR_CHK(cudaMemcpy(dC, hC, C_size * sizeof(TC), cudaMemcpyHostToDevice));
 
-  double secs = 0.0;
 
-  for (int i = 0; i < warmup_iters; ++i)
-    dispatch(dA, dB, dC, M, N, K, 1, kernel_num);
-  for (int i = 0; i < iters; ++i)
-    secs += dispatch(dA, dB, dC, M, N, K, 1, kernel_num);
+  dispatch(dA, dB, dC, M, N, K, warmup_iters, kernel_num);
+  double secs = dispatch(dA, dB, dC, M, N, K, iters, kernel_num);
 
   std::cout << "Kernel " << kernel_num << ": " << secs * 1000000.0 << "ms\n";
 
