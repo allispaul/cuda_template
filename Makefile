@@ -1,23 +1,32 @@
 CXX=nvcc
 APP=main
 
-CXXFLAGS=--generate-code=arch=compute_89,code=sm_89 -std=c++17 -O3 -Xcompiler=-Wno-psabi -Xcompiler=-fno-strict-aliasing --expt-relaxed-constexpr -lineinfo
+CXXFLAGS=--generate-code=arch=compute_89,code=sm_89 -std=c++17 -Xcompiler=-Wno-psabi -Xcompiler=-fno-strict-aliasing --expt-relaxed-constexpr
+
+NDEBUGFLAGS=-DNDEBUG -lineinfo -O3
+
+DEBUGFLAGS=-G -g
 
 LDFLAGS=
 
 LDLIBS=-lcuda
 
-OBJECTS = ${APP}.o
-
-.SUFFIXES: .o .cu
-
 default: clean ${APP}
 
-${APP}: $(OBJECTS)
-        $(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(LDLIBS)
+debug: ${APP}.cu
+	$(CXX) $(CXXFLAGS) $(DEBUGFLAGS) $(LDFLAGS) -o $@ $(LDLIBS) ${APP}.cu
 
-${APP}.o:
-        $(CXX) -c $(CXXFLAGS) -o "$@" ${APP}.cu
+${APP}: ${APP}.cu
+	$(CXX) $(CXXFLAGS) $(NDEBUGFLAGS) $(LDFLAGS) -o $@ $(LDLIBS) ${APP}.cu
+
+${APP}.ptx: ${APP}.cu
+	$(CXX) $(CXXFLAGS) $(NDEBUGFLAGS) -ptx -o $@ ${APP}.cu
+
+${APP}.cubin: ${APP}.cu
+	$(CXX) $(CXXFLAGS) $(NDEBUGFLAGS) -cubin -o $@ ${APP}.cu
+
+${APP}.sass: ${APP}.cu
+	nvdisasm ${APP}.cu > ${APP}.sass
 
 clean:
-        rm -f $(OBJECTS) ${APP}
+	rm -f ${APP} ${APP}.sass ${APP}.ptx ${APP}.cubin
