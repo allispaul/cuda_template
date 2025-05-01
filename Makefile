@@ -3,7 +3,7 @@ ARCH=90a
 CUTLASS_DIR=~/Documents/cuda/cutlass/
 
 CXX=nvcc
-CXXFLAGS=--generate-code=arch=compute_${ARCH},code=sm_${ARCH} -std=c++17 -Xcompiler=-Wno-psabi -Xcompiler=-fno-strict-aliasing --expt-relaxed-constexpr -I${CUTLASS_DIR}/include -I${CUTLASS_DIR}/tools/util/include
+CXXFLAGS=--generate-code=arch=compute_${ARCH},code=sm_${ARCH} -std=c++17 -Xcompiler=-Wno-psabi -Xcompiler=-fno-strict-aliasing --expt-relaxed-constexpr -Xptxas=-v,--warn-on-spills -I${CUTLASS_DIR}/include -I${CUTLASS_DIR}/tools/util/include
 
 NDEBUGFLAGS=-DNDEBUG -lineinfo -O3
 
