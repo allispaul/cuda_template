@@ -28,7 +28,7 @@ ${APP}.cubin: ${APP}.cu
 	$(CXX) $(CXXFLAGS) $(NDEBUGFLAGS) -cubin -o $@ ${APP}.cu
 
 ${APP}.sass: ${APP}.cubin
-	nvdisasm ${APP}.cubin > $@
+	nvdisasm -c ${APP}.cubin > $@
 
 clean:
 	rm -f ${APP} ${APP}.sass ${APP}.ptx ${APP}.cubin
